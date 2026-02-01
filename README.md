@@ -18,8 +18,6 @@ Step Free addresses a real-world accessibility challenge faced by millions of di
 ### Best Travel Hack
 Step Free reimagines journey planning from an accessibility-first perspective. Unlike existing apps that show "fastest route" or "cheapest option," Step Free generates multiple backup plans, accounts for disruptions (broken lifts, weather, fatigue), and provides detailed accessibility notes for each step. It's the first journey planner built specifically for disabled travelers.
 
-### Best Use of Claude
-Step Free leverages Claude 3.5 Sonnet to generate comprehensive, context-aware journey plans. The app uses strict JSON schema validation with automatic retry logic, ensuring Claude outputs structured data matching our accessibility-focused schema. Claude's understanding of accessibility needs, sensory considerations, and transport networks enables it to create detailed plans with confidence scores, risk flags, and staff assistance scripts—features impossible with traditional routing APIs.
 
 ## Tech Stack
 
@@ -56,61 +54,7 @@ Step Free leverages Claude 3.5 Sonnet to generate comprehensive, context-aware j
 5. **Open in browser:**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Demo Script (90 seconds)
 
-**0:00-0:15** - Introduction
-- "Step Free is an accessibility-first journey planner built for Transport for All"
-- Show the clean interface with form fields
-
-**0:15-0:30** - Input journey details
-- Enter: "King's Cross Station" → "London Bridge"
-- Check "Step-free only" and "Wheelchair user"
-- Select disruption: "Lift out of service"
-- Click "Generate step-free plan"
-
-**0:30-0:60** - Show results
-- Highlight the summary and confidence score
-- Scroll through primary plan steps showing accessibility notes, sensory notes, and risk flags
-- Show the two backup plans (explain why they're different)
-- Point out the staff script with "Copy script" button
-
-**0:60-0:75** - Demonstrate replanning
-- Click "Replan" button to regenerate with same inputs
-- Show how plans can vary based on AI interpretation
-
-**0:75-0:90** - Show debug panel
-- Open "Debug Information" accordion
-- Show model name (Claude 3.5 Sonnet), latency, and repair status
-- Explain the strict JSON validation and retry logic
-
-## Proof of Claude Use
-
-### Debug Panel
-Every plan response includes a debug section accessible via the "Debug Information" accordion at the bottom of results. This shows:
-- **Model:** `claude-3-5-sonnet-20241022`
-- **Latency:** Response time in milliseconds
-- **Repaired:** Whether the response was automatically repaired after initial validation failure
-- **Raw Response:** The original JSON output from Claude (if validation failed)
-
-### API Implementation
-The `/api/plan` route (`app/api/plan/route.ts`) directly calls Anthropic's Messages API using `fetch`, not a wrapper SDK. Key evidence:
-- Uses `https://api.anthropic.com/v1/messages` endpoint
-- Includes `x-api-key` and `anthropic-version` headers
-- Sends structured prompts via `SYSTEM_PROMPT` and `buildUserPrompt()`
-- Implements retry logic with "repair JSON" prompt on validation failure
-
-### Console Logs
-During development, check the terminal running `npm run dev` for:
-- API request/response logs
-- Validation errors (if any)
-- Retry attempts with repair prompts
-
-### Schema Validation
-All Claude responses are validated against a strict Zod schema (`lib/schema.ts`) that enforces:
-- Exact field names matching the accessibility-focused structure
-- Required arrays (exactly 2 backup plans)
-- Confidence scores (0-100)
-- Step-by-step accessibility notes, sensory notes, and risk flags
 
 ## Future Improvements
 
